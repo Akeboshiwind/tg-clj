@@ -101,6 +101,26 @@ Other than client errors, errors are given how telegram represents them:
 ;;     :description "Bad Request: message text is empty"}
 ```
 
+If you want to inspect the full response in more detail, it's attached as metadata:
+
+```clojure
+(meta (tg/invoke client {:op :getMe}))
+;; => {:http-response
+;;     {:opts
+;;      {:as :text,
+;;       :headers {"Accept" "application/json"},
+;;       :method :post,
+;;       :url
+;;       "https://api.telegram.org/bot<your-token>/getMe"},
+;;      :status 200,
+;;      :headers
+;;      { <snip> },
+;;      :body
+;;      "{\"ok\":true,\"result\":{\"id\":123456789,\"is_bot\":true,\"first_name\":\"My Awesome Bot\",\"username\":\"mybot\",\"can_join_groups\":true,\"can_read_all_group_messages\":true,\"supports_inline_queries\":true}}"}}
+```
+
+Please note that the contents of `:http-response` is an implementation detail from [`http-kit`](https://github.com/http-kit/http-kit) and may change.
+
 ## Handling updates
 
 The simplest way to get updates is to just invoke [`:getUpdates`](https://core.telegram.org/bots/api#getupdates) with a `timeout` (i.e. [long polling](https://en.wikipedia.org/wiki/Push_technology#Long_polling)):
