@@ -9,7 +9,7 @@ A simple-as-possible telegram bot api client inspired by [aws-api](https://githu
 Use as a dependency in `deps.edn` or `bb.edn`:
 
 ```clojure
-akeboshiwind/tg-clj {:mvn/version "0.1.0"}
+io.github.akeboshiwind/tg-clj {:git/tag "v0.1.0" :git/sha "86370b1"}
 ```
 
 ## Usage
