@@ -153,3 +153,9 @@ A simple loop to handle command events might look like this:
 ```
 
 For something more framework-y look forward to my next release!
+
+## Releasing
+
+1. Tag the commit `v<version>`
+2. `git push --tags`
+2. Update the README.md with the new version and git hash
