@@ -7,7 +7,7 @@
   {::token token
    ::base-url (or base-url "https://api.telegram.org")})
 
-(defn post
+(defn- post
   "Perform a POST request to the Telegram API"
   [{::keys [token base-url]} method opts]
   (let [opts (-> opts
@@ -22,10 +22,10 @@
 ;; TODO: Support InputStreams
 ;;       Need to figure out how to provide a filename
 ;;       otherwise Telegram will error :/
-(defn file? [x]
+(defn- file? [x]
   (instance? java.io.File x))
 
-(defn request->multipart [request]
+(defn- request->multipart [request]
   (->> request
        (map (fn [[k v]]
               (merge
