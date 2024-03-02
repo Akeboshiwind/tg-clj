@@ -4,6 +4,7 @@
 
 (defn make-client
   [{:keys [token base-url]}]
+  (assert token ":token is required")
   {::token token
    ::base-url (or base-url "https://api.telegram.org")})
 
