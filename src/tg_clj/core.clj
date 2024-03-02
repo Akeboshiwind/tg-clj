@@ -2,9 +2,10 @@
   (:require [org.httpkit.client :as http]
             [cheshire.core :as json]))
 
-(defn make-client [{:keys [token]}]
+(defn make-client
+  [{:keys [token base-url]}]
   {::token token
-   ::base-url "https://api.telegram.org"})
+   ::base-url (or base-url "https://api.telegram.org")})
 
 (defn post
   "Perform a POST request to the Telegram API"
