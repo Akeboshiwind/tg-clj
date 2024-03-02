@@ -174,6 +174,10 @@ A simple loop to handle command events might look like this:
 
 For something more framework-y look forward to my next release!
 
+## Dev
+
+`clj -M:dev`
+
 ## Releasing
 
 1. Tag the commit `v<version>`
