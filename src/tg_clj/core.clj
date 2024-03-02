@@ -3,6 +3,16 @@
             [cheshire.core :as json]))
 
 (defn make-client
+  "Given a map of:
+
+  :token    - The bot token (required).
+              See the telegram docs for more info
+  :base-url - For overriding the default base url (optional).
+              For use with a [local bot api server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
+              (currently untested)
+
+  Create a new Telegram bot api client.
+  "
   [{:keys [token base-url]}]
   (assert token ":token is required")
   {::token token
@@ -26,7 +36,10 @@
 (defn- file? [x]
   (instance? java.io.File x))
 
-(defn- request->multipart [request]
+(defn- request->multipart
+  "Given a map of parameters, convert it to a multipart/form-data compatible format.
+  Does so in such a way that telegram will understand it."
+  [request]
   (->> request
        (map (fn [[k v]]
               (merge
@@ -43,6 +56,7 @@
   :request - the parameters for the method
 
   Perform a POST request to the Telegram API.
+  See the [Telegram Bot API](https://core.telegram.org/bots/api) for a list of methods.
   
   If one of the top level values in :request is a file, it will
   be sent as multipart/form-data.
