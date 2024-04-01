@@ -2,7 +2,42 @@
 
 A simple-as-possible telegram bot api client inspired by [aws-api](https://github.com/cognitect-labs/aws-api).
 
-[Babashka](https://github.com/babashka/babashka) compatible!
+<p>
+  <a href="#installation">Installation</a> |
+  <a href="#getting-started">Getting Started</a> |
+  <a href="#handling-updates">Handling Updates</a> |
+  <a href="https://github.com/Akeboshiwind/tg-clj-server">tg-clj-server</a>
+</p>
+
+## Why
+
+This library gets out of the way so you can just use the [Telegram Bot API](https://core.telegram.org/bots/api) (almost) directly.
+
+```clojure
+(require '[tg-clj.core :as tg])
+
+(def client (tg/make-client {:token "<Your bot token here>"}))
+
+(tg/invoke client {:op :sendMessage
+                   :request {:chat_id 1234 ; Replace with your chat_id
+                             :text "Hello!"}})
+;; => {:ok true,
+;;     :result
+;;     {:message_id 4321,
+;;      :from
+;;      {:id 123456789,
+;;       :is_bot true,
+;;       :first_name "My Awesome Bot",
+;;       :username "mybot"},
+;;      :chat
+;;      {:id 987654321,
+;;       :first_name "My",
+;;       :last_name "Name",
+;;       :username "myusername",
+;;       :type "private"},
+;;      :date 1709377902,
+;;      :text "Hello!"}}
+```
 
 ## Installation
 
@@ -12,7 +47,7 @@ Use as a dependency in `deps.edn` or `bb.edn`:
 io.github.akeboshiwind/tg-clj {:git/tag "v0.2.1" :git/sha "1a913bc"}
 ```
 
-## Usage
+## Getting Started
 
 The workflow is as simple as it gets.
 
@@ -43,7 +78,7 @@ Then `invoke` it as `:op`:
 ;;      :supports_inline_queries true}}
 ```
 
-You can provide parameters under `:request`:
+You can provide parameters using the `:request` key:
 ```clojure
 (tg/invoke client {:op :sendMessage
                    :request {:chat_id 1234 ; Replace with your chat_id
@@ -66,7 +101,7 @@ You can provide parameters under `:request`:
 ;;      :text "Hello!"}}
 ```
 
-If you provide a [`file`](https://clojuredocs.org/clojure.java.io/file) as a top level parameter then the request will correctly be sent using `multipart/form-data`:
+If you provide a [`File`](https://clojuredocs.org/clojure.java.io/file) as a top level parameter then the request will be sent correctly (using `multipart/form-data`):
 ```clojure
 (require '[clojure.java.io :as io])
 (tg/invoke client {:op :sendPhoto
@@ -123,6 +158,8 @@ Please note that the contents of `:http-response` is an implementation detail fr
 
 ## Handling updates
 
+(Checkout [tg-clj-server](https://github.com/Akeboshiwind/tg-clj-server) if this is too "manual" for you)
+
 The simplest way to get updates is to just invoke [`:getUpdates`](https://core.telegram.org/bots/api#getupdates) with a `timeout` (i.e. [long polling](https://en.wikipedia.org/wiki/Push_technology#Long_polling)):
 
 ```clojure
@@ -134,19 +171,12 @@ The simplest way to get updates is to just invoke [`:getUpdates`](https://core.t
 ;;     [ <snip> ]}
 ```
 
-A simple loop to handle command events might look like this:
+A simple loop to handle basic command events might look like this:
 
 ```clojure
-(def bot-username (-> (tg/invoke client {:op :getMe})
-                      (get-in [:result :username])))
-
-(defn valid-command? [cmd]
-  (re-matches #"/[a-z0-9_]+" cmd))
-
-(defn command? [cmd u]
-  (assert (valid-command? cmd) (str "Invalid command: " cmd))
+(defn contains-command? [u cmd]
   (when-let [text (get-in u [:message :text])]
-    (let [pattern (str "(^| )" cmd "($|@" bot-username "| )")]
+    (let [pattern (str "^" cmd "($| )")]
       (re-find (re-pattern pattern) text))))
 
 (defn hello-handler [u]
@@ -159,24 +189,17 @@ A simple loop to handle command events might look like this:
 
 (loop [offset 0]
   (let [{:keys [ok result]}
-        (tg/invoke client {:op :getUpdates
-                           :request {:offset offset
-                                     :timeout 5}})]
+        (invoke client {:op :getUpdates
+                        :request {:offset offset
+                                  :timeout 5}})]
     (if (and ok (seq result))
-      (do
-        (doseq [u result]
-          (when (command? "/hello" u)
-            (when-let [response (hello-handler u)]
-              (tg/invoke client response))))
-        (recur (->> result (map :update_id) (apply max) inc)))
+      (do (doseq [u result]
+            (when (contains-command? u "/hello")
+              (when-let [response (hello-handler u)]
+                (invoke client response))))
+          (recur (->> result (map :update_id) (apply max) inc)))
       (recur offset))))
 ```
-
-For something more framework-y look forward to my next release!
-
-## Dev
-
-`clj -M:dev`
 
 ## Releasing
 
