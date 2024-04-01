@@ -44,7 +44,7 @@ This library gets out of the way so you can just use the [Telegram Bot API](http
 Use as a dependency in `deps.edn` or `bb.edn`:
 
 ```clojure
-io.github.akeboshiwind/tg-clj {:git/tag "v0.2.1" :git/sha "1a913bc"}
+io.github.akeboshiwind/tg-clj {:git/tag "v0.2.2" :git/sha "f742d7e"}
 ```
 
 ## Getting Started
