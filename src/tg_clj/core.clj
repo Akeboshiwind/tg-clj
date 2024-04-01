@@ -58,8 +58,8 @@
   Perform a POST request to the Telegram API.
   See the [Telegram Bot API](https://core.telegram.org/bots/api) for a list of methods.
   
-  If one of the top level values in :request is a file, it will
-  be sent as multipart/form-data.
+  If one of the top level values in :request is a java.io.File, the request
+  will be sent as multipart/form-data.
   Otherwise, it will be sent as application/json."
   [client {:keys [op request]}]
   (post client (name op)
