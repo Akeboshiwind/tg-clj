@@ -205,4 +205,5 @@ A simple loop to handle basic command events might look like this:
 
 1. Tag the commit `v<version>`
 2. `git push --tags`
-2. Update the README.md with the new version and git hash
+3. Update the README.md with the new version and git hash
+4. Update the CHANGELOG.md
