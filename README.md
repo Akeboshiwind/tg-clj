@@ -9,6 +9,14 @@ A simple-as-possible telegram bot api client inspired by [aws-api](https://githu
   <a href="https://github.com/Akeboshiwind/tg-clj-server">tg-clj-server</a>
 </p>
 
+> [!CAUTION]
+> `tg-clj-server` and `tg-clj` are considered alpha!
+>
+> I'll put a warning in the [changelog](/CHANGELOG.md) when a breaking change happens.
+> This warning will be removed once I consider the API stable.
+
+
+
 ## Why
 
 This library gets out of the way so you can just use the [Telegram Bot API](https://core.telegram.org/bots/api) (almost) directly.
