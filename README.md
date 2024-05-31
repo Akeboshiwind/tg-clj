@@ -47,6 +47,8 @@ This library gets out of the way so you can just use the [Telegram Bot API](http
 ;;      :text "Hello!"}}
 ```
 
+
+
 ## Installation
 
 Use as a dependency in `deps.edn` or `bb.edn`:
@@ -54,6 +56,8 @@ Use as a dependency in `deps.edn` or `bb.edn`:
 ```clojure
 io.github.akeboshiwind/tg-clj {:git/tag "v0.2.2" :git/sha "f742d7e"}
 ```
+
+
 
 ## Getting Started
 
@@ -164,6 +168,8 @@ If you want to inspect the full response in more detail, it's attached as metada
 
 Please note that the contents of `:http-response` is an implementation detail from [`http-kit`](https://github.com/http-kit/http-kit) and may change.
 
+
+
 ## Handling updates
 
 (Checkout [tg-clj-server](https://github.com/Akeboshiwind/tg-clj-server) if this is too "manual" for you)
@@ -208,6 +214,8 @@ A simple loop to handle basic command events might look like this:
           (recur (->> result (map :update_id) (apply max) inc)))
       (recur offset))))
 ```
+
+
 
 ## Releasing
 
