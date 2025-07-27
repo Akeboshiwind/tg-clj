@@ -24,7 +24,7 @@ This library gets out of the way so you can just use the [Telegram Bot API](http
 ```clojure
 (require '[tg-clj.core :as tg])
 
-(def client (tg/make-client {:token "<Your bot token here>"}))
+(def client (tg/make-client {:token "<Your bot token here>" :timeout 20000}))
 
 (tg/invoke client {:op :sendMessage
                    :request {:chat_id 1234 ; Replace with your chat_id
@@ -71,7 +71,7 @@ First require the namespace:
 
 Make a client (to learn how to create a bot and/or get it's token see [here](https://core.telegram.org/bots/features#botfather)):
 ```clojure
-(def client (tg/make-client {:token "<Your bot token here>"}))
+(def client (tg/make-client {:token "<Your bot token here>" :timeout 20000}))
 ```
 
 The browse [telegram's documentation](https://core.telegram.org/bots/api#available-methods) for a method you want to call.
@@ -177,6 +177,9 @@ Please note that the contents of `:http-response` is an implementation detail fr
 The simplest way to get updates is to just invoke [`:getUpdates`](https://core.telegram.org/bots/api#getupdates) with a `timeout` (i.e. [long polling](https://en.wikipedia.org/wiki/Push_technology#Long_polling)):
 
 ```clojure
+;; For long polling, the client timeout must be longer than the polling timeout
+(def client (tg/make-client {:token "<Your bot token here>" :timeout 30000}))
+
 (tg/invoke client {:op :getUpdates
                    :request {:offset 0
                              :timeout 5}})

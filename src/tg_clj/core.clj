@@ -10,25 +10,34 @@
   :base-url - For overriding the default base url (optional).
               For use with a [local bot api server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
               (currently untested)
+  :timeout  - HTTP timeout in milliseconds (optional, default: no timeout)
+              Recommended for production use.
+              Must exceed getUpdates timeout when long polling, otherwise you'll get a client timeout error
 
   Create a new Telegram bot api client.
   "
-  [{:keys [token base-url]}]
+  [{:keys [token base-url timeout]}]
   (assert token ":token is required")
   {::token token
-   ::base-url (or base-url "https://api.telegram.org")})
+   ::base-url (or base-url "https://api.telegram.org")
+   ::timeout timeout})
 
 (defn- post
   "Perform a POST request to the Telegram API"
-  [{::keys [token base-url]} method opts]
-  (let [opts (-> opts
-                 (assoc :as :text)
-                 (assoc-in [:headers "Accept"] "application/json"))
+  [{::keys [token base-url timeout]} method opts]
+  (let [opts (cond-> opts
+               :always (assoc :as :text)
+               :always (assoc-in [:headers "Accept"] "application/json")
+               timeout (assoc :timeout timeout))
         url (str base-url "/bot" token "/" method)
-        ; TODO: Add timeout
         resp @(http/post url opts)]
-    (with-meta (-> resp :body (json/parse-string true))
-      {:http-response resp})))
+    (if-let [error (:error resp)]
+      (throw (ex-info "HTTP request failed"
+                      {:method method
+                       :error error
+                       :http-response resp}))
+      (with-meta (-> resp :body (json/parse-string true))
+        {:http-response resp}))))
 
 ;; TODO: Support InputStreams
 ;;       Need to figure out how to provide a filename
