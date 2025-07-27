@@ -178,11 +178,11 @@ The simplest way to get updates is to just invoke [`:getUpdates`](https://core.t
 
 ```clojure
 ;; For long polling, the client timeout must be longer than the polling timeout
-(def client (tg/make-client {:token "<Your bot token here>" :timeout 30000}))
+(def client (tg/make-client {:token "<Your bot token here>" :timeout 35000}))
 
 (tg/invoke client {:op :getUpdates
                    :request {:offset 0
-                             :timeout 5}})
+                             :timeout 30}})
 ;; => {:ok true,
 ;;     :result
 ;;     [ <snip> ]}
@@ -208,7 +208,7 @@ A simple loop to handle basic command events might look like this:
   (let [{:keys [ok result]}
         (invoke client {:op :getUpdates
                         :request {:offset offset
-                                  :timeout 5}})]
+                                  :timeout 30}})]
     (if (and ok (seq result))
       (do (doseq [u result]
             (when (contains-command? u "/hello")
