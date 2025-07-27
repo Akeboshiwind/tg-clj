@@ -3,18 +3,15 @@
             [cheshire.core :as json]))
 
 (defn make-client
-  "Given a map of:
+  "Create a new Telegram bot api client.
 
-  :token    - The bot token (required).
-              See the telegram docs for more info
-  :base-url - For overriding the default base url (optional).
-              For use with a [local bot api server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
-              (currently untested)
+  Options:
+  :token    - The bot token (required)
+  :base-url - API base URL (optional, default: https://api.telegram.org)
+              For use with [local bot API servers](https://core.telegram.org/bots/api#using-a-local-bot-api-server)
   :timeout  - HTTP timeout in milliseconds (optional, default: no timeout)
               Recommended for production use.
               Must exceed getUpdates timeout when long polling, otherwise you'll get a client timeout error
-
-  Create a new Telegram bot api client.
   "
   [{:keys [token base-url timeout]}]
   (assert token ":token is required")
